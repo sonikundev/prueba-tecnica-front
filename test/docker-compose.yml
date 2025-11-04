@@ -1,0 +1,42 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: prueba_rodrigo
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 12345678
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./prueba-rodrigo-back/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uuser", "-p12345678"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build: ./prueba-rodrigo-back
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: 12345678
+      DB_NAME: prueba_rodrigo
+
+  frontend:
+    build: ./prueba-rodrigo-front
+    ports:
+      - "5173:5173"     
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
