@@ -42,7 +42,7 @@ Incluye:
 ### Clonar el repositorio y ejecutar el contenedor
 
 ```bash
-git clone <tu-repositorio>
+git clone https://github.com/sonikundev/prueba-tecnica-front.git
 cd test
 docker compose up --build
 ```
